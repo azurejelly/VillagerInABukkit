@@ -23,24 +23,32 @@ import java.util.List;
 
 public class VillagerItem extends GenericCustomItem {
 
+    // Main item initialisation
     public VillagerItem() {
+        // Plugin instance, item ID, texture PNG link
+        // I had trouble getting the texture working, not sure if it was a weird cache thing or what. Try delete Spout cache
+        // info if you are having trouble with it not applying to the item. Or grab a new one from the creative menu
         super(Main.get(), "villagerinabucket", "https://i.ibb.co/sCFvQBD/q6wBozz.png");
-        setName("Villager In A Bucket");
-        setStackable(false);
+        setName("Villager In A Bucket"); // Item name
+        setStackable(false); // Why no worky
     }
 
     @Override
     public boolean onItemInteract(SpoutPlayer player, SpoutBlock block, BlockFace face) {
         if (player == null || block == null || face == null) return true;
 
+        // Fun NMS stuff to store villager recipes in the lore encoded as Base64 :)
         World world = player.getWorld();
         ItemStack item = player.getItemInHand();
         CraftVillager villager = (CraftVillager) world.spawnEntity(new Location(world, block.getX() + face.getModX(), block.getY() + face.getModY(), block.getZ() + face.getModZ()), EntityType.VILLAGER);
+
+        // Check just in case it is pulled from the creative menu as it will have no lore data
         if (!item.getItemMeta().getLore().isEmpty()) {
             List<String> lore = item.getItemMeta().getLore();
             villager.setProfession(Villager.Profession.valueOf(lore.get(0)));
             villager.setAge(Integer.parseInt(lore.get(1)));
 
+            // Remove first 2 which are always Profession and Age. The rest is encoded data
             lore.remove(0);
             lore.remove(0);
 

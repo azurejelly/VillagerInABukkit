@@ -48,12 +48,16 @@ public class VillagerListener implements Listener {
             recipes.add(Base64.getEncoder().encodeToString(inMemoryOutput.toByteArray()));
         }
 
+        // This is how you can add the item to the inventory through code. Use a SpoutItemStack
         SpoutItemStack item = new SpoutItemStack(Main.get().VILLAGER_IN_A_BUCKET);
+
+        // Set lore
         ItemMeta meta = item.getItemMeta();
         CraftItemStack craftItemStack = (CraftItemStack) itemStack;
         craftItemStack.getItemMeta();
         meta.setLore(recipes);
         item.setItemMeta(meta);
+
         clicked.remove();
         event.setCancelled(true);
 
