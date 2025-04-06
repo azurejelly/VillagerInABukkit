@@ -27,15 +27,15 @@ java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 
-tasks.processResources {
-    filesMatching("**/plugin.yml") {
-        expand(
-            "name" to rootProject.name,
-            "version" to project.version,
-            "group" to project.group.toString()
-        )
-    }
-}
+//tasks.processResources {
+//    filesMatching("**/plugin.yml") {
+//        expand(
+//            "name" to rootProject.name,
+//            "version" to project.version,
+//            "group" to project.group.toString()
+//        )
+//    }
+//}
 
 tasks {
     runServer {
