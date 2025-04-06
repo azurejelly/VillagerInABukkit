@@ -1,7 +1,7 @@
-name: VillagerInABucketSpout
-main: com.imjustdoom.Main
+name: VillagerInABukkit
+main: com.imjustdoom.villagerinabucket.Main
 version: 1.0.0
-
-# Depend on Spout
-depend:
-  - Spout
+api-version: '1.21.4'
+description: Plugin version of Villager In A Bucket
+author: JustDoom
+website: https://imjustdoom.com

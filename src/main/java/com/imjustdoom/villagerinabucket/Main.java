@@ -1,6 +1,7 @@
-package com.imjustdoom;
+package com.imjustdoom.villagerinabucket;
 
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
@@ -11,14 +12,10 @@ public class Main extends JavaPlugin {
         INSTANCE = this;
     }
 
-    public VillagerItem VILLAGER_IN_A_BUCKET;
+    public NamespacedKey key = new NamespacedKey(this, "villager_data");
 
     @Override
     public void onEnable() {
-        // The item needs to be initialised somewhere. Add as variable to this class so it can be referenced to add to inventories
-        VILLAGER_IN_A_BUCKET = new VillagerItem();
-
-        // Normal event registering
         Bukkit.getPluginManager().registerEvents(new VillagerListener(), this);
     }
 
