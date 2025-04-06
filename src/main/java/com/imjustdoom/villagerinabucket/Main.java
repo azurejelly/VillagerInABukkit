@@ -7,10 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -24,10 +21,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main extends JavaPlugin implements Listener {
+    private static Main INSTANCE;
+
     public NamespacedKey key = new NamespacedKey(this, "villager_data");
+
+    public Main() {
+        INSTANCE = this;
+    }
 
     @Override
     public void onEnable() {
+        Config.init();
         Bukkit.getPluginManager().registerEvents(this, this);
     }
 
@@ -40,19 +44,42 @@ public class Main extends JavaPlugin implements Listener {
         return dataContainer.has(this.key) && dataContainer.get(this.key, PersistentDataType.BYTE_ARRAY) != null;
     }
 
-    public void createVillagerBucket(ItemStack itemStack, Villager villager) {
+    public void createVillagerBucket(ItemStack itemStack, Entity entity) {
         itemStack.editMeta(meta -> {
-            meta.customName(Component.text("Villager In A Bucket"));
-            meta.getPersistentDataContainer().set(this.key, PersistentDataType.BYTE_ARRAY, Bukkit.getUnsafe().serializeEntity(villager));
+            meta.getPersistentDataContainer().set(this.key, PersistentDataType.BYTE_ARRAY, Bukkit.getUnsafe().serializeEntity(entity));
             meta.setMaxStackSize(1);
-            List<Component> lore = new ArrayList<>();
-            lore.add(Component.text("Level: " + villager.getVillagerLevel(), TextColor.color(Color.GRAY.asRGB()), TextDecoration.ITALIC));
-            lore.add(Component.text("Region: " + villager.getVillagerType().getKey().getKey().toUpperCase(), TextColor.color(Color.GRAY.asRGB()), TextDecoration.ITALIC));
-            lore.add(Component.text("Profession: " + villager.getProfession(), TextColor.color(Color.GRAY.asRGB()), TextDecoration.ITALIC));
-            if (!villager.isAdult()) {
-                lore.add(Component.text("Baby", TextColor.color(Color.GRAY.asRGB()), TextDecoration.ITALIC));
+
+            switch (entity) {
+                case Villager villager -> {
+                    meta.customName(Component.text("Villager In A Bucket"));
+                    List<Component> lore = new ArrayList<>();
+                    lore.add(Component.text("Level: " + villager.getVillagerLevel(), TextColor.color(Color.GRAY.asRGB()), TextDecoration.ITALIC));
+                    lore.add(Component.text("Region: " + villager.getVillagerType().getKey().getKey().toUpperCase(), TextColor.color(Color.GRAY.asRGB()), TextDecoration.ITALIC));
+                    lore.add(Component.text("Profession: " + villager.getProfession(), TextColor.color(Color.GRAY.asRGB()), TextDecoration.ITALIC));
+                    if (!villager.isAdult()) {
+                        lore.add(Component.text("Baby", TextColor.color(Color.GRAY.asRGB()), TextDecoration.ITALIC));
+                    }
+                    meta.lore(lore);
+                }
+                case ZombieVillager zombieVillager -> {
+                    meta.customName(Component.text("Zombie Villager In A Bucket"));
+                    List<Component> lore = new ArrayList<>();
+                    if (!zombieVillager.isAdult()) {
+                        lore.add(Component.text("Baby", TextColor.color(Color.GRAY.asRGB()), TextDecoration.ITALIC));
+                    }
+                    meta.lore(lore);
+                }
+                case WanderingTrader wanderingTrader -> {
+                    meta.customName(Component.text("Wandering Trader In A Bucket"));
+                    List<Component> lore = new ArrayList<>();
+                    if (!wanderingTrader.isAdult()) {
+                        lore.add(Component.text("Baby", TextColor.color(Color.GRAY.asRGB()), TextDecoration.ITALIC));
+                    }
+                    meta.lore(lore);
+                }
+                default -> {
+                }
             }
-            meta.lore(lore);
         });
     }
 
@@ -61,16 +88,18 @@ public class Main extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         ItemStack itemStack = player.getInventory().getItemInMainHand();
         Entity clicked = event.getRightClicked();
-        if (clicked.getType() != EntityType.VILLAGER || itemStack.getType() != Material.BUCKET || isVillagerBucket(itemStack)) {
+        if ((clicked.getType() != EntityType.VILLAGER && clicked.getType() != EntityType.WANDERING_TRADER && (clicked.getType() != EntityType.ZOMBIE_VILLAGER || !Config.ZOMBIE_VILLAGER)) || itemStack.getType() != Material.BUCKET || isVillagerBucket(itemStack)) {
             return;
         }
+
+        // Handle single or multiple bucket stacks
         if (itemStack.getAmount() > 1) {
             ItemStack newStack = new ItemStack(Material.BUCKET);
-            createVillagerBucket(newStack, (Villager) clicked);
+            createVillagerBucket(newStack, clicked);
             itemStack.setAmount(itemStack.getAmount() - 1);
             player.getInventory().addItem(newStack);
         } else {
-            createVillagerBucket(itemStack, (Villager) clicked);
+            createVillagerBucket(itemStack, clicked);
         }
         clicked.remove();
         event.setCancelled(true);
@@ -96,5 +125,9 @@ public class Main extends JavaPlugin implements Listener {
             }
         });
         event.setCancelled(true);
+    }
+
+    public static Main get() {
+        return INSTANCE;
     }
 }
