@@ -1,2 +1,6 @@
+# Should Villager functionality be enabled?
+villager: true
 # Should Zombie villager functionality be enabled?
 zombie-villager: true
+# Should Wandering Trader functionality be enabled?
+wandering-trader: true

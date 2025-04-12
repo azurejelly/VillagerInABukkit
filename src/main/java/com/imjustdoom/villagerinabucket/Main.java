@@ -88,7 +88,10 @@ public class Main extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         ItemStack itemStack = player.getInventory().getItemInMainHand();
         Entity clicked = event.getRightClicked();
-        if ((clicked.getType() != EntityType.VILLAGER && clicked.getType() != EntityType.WANDERING_TRADER && (clicked.getType() != EntityType.ZOMBIE_VILLAGER || !Config.ZOMBIE_VILLAGER)) || itemStack.getType() != Material.BUCKET || isVillagerBucket(itemStack)) {
+        if (((clicked.getType() != EntityType.VILLAGER || !Config.VILLAGER)
+                && (clicked.getType() != EntityType.WANDERING_TRADER || !Config.WANDERING_TRADER)
+                && (clicked.getType() != EntityType.ZOMBIE_VILLAGER || !Config.ZOMBIE_VILLAGER))
+                || itemStack.getType() != Material.BUCKET || isVillagerBucket(itemStack)) {
             return;
         }
 
@@ -113,9 +116,20 @@ public class Main extends JavaPlugin implements Listener {
         if (!event.getAction().isRightClick() || event.getClickedBlock() == null || !isVillagerBucket(itemStack)) {
             return;
         }
+        event.setCancelled(true);
 
         PersistentDataContainer dataContainer = itemStack.getItemMeta().getPersistentDataContainer();
-        Bukkit.getUnsafe().deserializeEntity(dataContainer.get(this.key, PersistentDataType.BYTE_ARRAY), player.getWorld()).spawnAt(event.getInteractionPoint());
+        Entity entity = Bukkit.getUnsafe().deserializeEntity(dataContainer.get(this.key, PersistentDataType.BYTE_ARRAY), player.getWorld());
+
+        if (((!Config.VILLAGER && entity.getType() == EntityType.VILLAGER)
+            || (!Config.ZOMBIE_VILLAGER && entity.getType() == EntityType.ZOMBIE_VILLAGER)
+            || (!Config.WANDERING_TRADER && entity.getType() == EntityType.WANDERING_TRADER))
+                && Config.DISABLE_PLACING_OF_DISABLED) {
+            player.sendMessage(Component.text("You are not allowed to place this villager"));
+            return;
+        }
+
+        entity.spawnAt(event.getInteractionPoint());
         itemStack.editMeta(meta -> {
             meta.customName(null);
             meta.getPersistentDataContainer().remove(this.key);
@@ -124,7 +138,6 @@ public class Main extends JavaPlugin implements Listener {
                 meta.lore(null);
             }
         });
-        event.setCancelled(true);
     }
 
     public static Main get() {
