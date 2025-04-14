@@ -88,10 +88,21 @@ public class Main extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         ItemStack itemStack = player.getInventory().getItemInMainHand();
         Entity clicked = event.getRightClicked();
+        // Make sure it could possibly be a villager bucket item
+        if (itemStack.getType() != Material.BUCKET) {
+            return;
+        }
+
+        // If it is a villager bucket item and the entity clicked is a cow cancel the event - stops milking
+        if (isVillagerBucket(itemStack) && clicked instanceof Cow) {
+            event.setCancelled(true);
+            return;
+        }
+
+        // Check if the clicked entity is able to be picked up
         if (((clicked.getType() != EntityType.VILLAGER || !Config.VILLAGER)
                 && (clicked.getType() != EntityType.WANDERING_TRADER || !Config.WANDERING_TRADER)
-                && (clicked.getType() != EntityType.ZOMBIE_VILLAGER || !Config.ZOMBIE_VILLAGER))
-                || itemStack.getType() != Material.BUCKET || isVillagerBucket(itemStack)) {
+                && (clicked.getType() != EntityType.ZOMBIE_VILLAGER || !Config.ZOMBIE_VILLAGER))) {
             return;
         }
 
@@ -110,17 +121,19 @@ public class Main extends JavaPlugin implements Listener {
 
     @EventHandler
     public void bucketInteract(PlayerInteractEvent event) {
-        if (event.getHand() == null) {
-            return;
-        }
-
         Player player = event.getPlayer();
-        ItemStack itemStack = player.getInventory().getItem(event.getHand());
+        ItemStack itemStack = event.getItem();
 
-        if (!event.getAction().isRightClick() || event.getClickedBlock() == null || !isVillagerBucket(itemStack)) {
+        // Check if the action is related to a villager in a bucket item
+        if (!event.getAction().isRightClick() || itemStack == null || !isVillagerBucket(itemStack)) {
             return;
         }
         event.setCancelled(true);
+
+        // Return after cancelling event if a block is null because it is either air or water which could override the villager
+        if (event.getClickedBlock() == null) {
+            return;
+        }
 
         PersistentDataContainer dataContainer = itemStack.getItemMeta().getPersistentDataContainer();
         Entity entity = Bukkit.getUnsafe().deserializeEntity(dataContainer.get(this.key, PersistentDataType.BYTE_ARRAY), player.getWorld());
