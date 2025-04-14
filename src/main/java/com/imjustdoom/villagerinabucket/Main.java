@@ -110,6 +110,10 @@ public class Main extends JavaPlugin implements Listener {
 
     @EventHandler
     public void bucketInteract(PlayerInteractEvent event) {
+        if (event.getHand() == null) {
+            return;
+        }
+
         Player player = event.getPlayer();
         ItemStack itemStack = player.getInventory().getItem(event.getHand());
 
