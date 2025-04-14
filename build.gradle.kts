@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.imjustdoom.villagerinabucket"
-version = "1.0.1"
+version = "1.1.0"
 
 repositories {
     maven {
