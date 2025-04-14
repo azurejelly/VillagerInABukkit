@@ -4,3 +4,6 @@ villager: true
 zombie-villager: true
 # Should Wandering Trader functionality be enabled?
 wandering-trader: true
+
+# Disables players placing villager buckets of types that have been disabled if they obtain one somehow
+disable-bucket-use-on-disable: false
