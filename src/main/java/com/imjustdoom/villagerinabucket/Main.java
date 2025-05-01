@@ -86,15 +86,15 @@ public class Main extends JavaPlugin implements Listener {
     @EventHandler
     public void villagerInteract(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
-        ItemStack itemStack = player.getInventory().getItemInMainHand();
+        ItemStack itemStack = player.getInventory().getItem(event.getHand());
         Entity clicked = event.getRightClicked();
         // Make sure it could possibly be a villager bucket item
         if (itemStack.getType() != Material.BUCKET) {
             return;
         }
 
-        // If it is a villager bucket item and the entity clicked is a cow cancel the event - stops milking
-        if (isVillagerBucket(itemStack) && clicked instanceof Cow) {
+        // If it is a villager bucket item cancel the event - stops milking and picking up multiple villagers in a single bucket (overrides old one)
+        if (isVillagerBucket(itemStack)) {
             event.setCancelled(true);
             return;
         }
