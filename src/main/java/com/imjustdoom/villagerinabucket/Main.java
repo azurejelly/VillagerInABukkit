@@ -1,5 +1,7 @@
 package com.imjustdoom.villagerinabucket;
 
+import com.destroystokyo.paper.entity.villager.Reputation;
+import com.destroystokyo.paper.entity.villager.ReputationType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -44,13 +46,17 @@ public class Main extends JavaPlugin implements Listener {
         return dataContainer.has(this.key) && dataContainer.get(this.key, PersistentDataType.BYTE_ARRAY) != null;
     }
 
-    public void createVillagerBucket(ItemStack itemStack, Entity entity) {
+    public void createVillagerBucket(ItemStack itemStack, Entity entity, Player player) {
         itemStack.editMeta(meta -> {
-            meta.getPersistentDataContainer().set(this.key, PersistentDataType.BYTE_ARRAY, Bukkit.getUnsafe().serializeEntity(entity));
-            meta.setMaxStackSize(1);
-
             switch (entity) {
                 case Villager villager -> {
+                    if (Config.HARM_REPUTATION) {
+                        Reputation reputation = villager.getReputation(player.getUniqueId());
+                        int minorRep = reputation.getReputation(ReputationType.MINOR_NEGATIVE);
+                        reputation.setReputation(ReputationType.MINOR_NEGATIVE, minorRep >= 175 ? 200 : minorRep + 25);
+                        villager.setReputation(player.getUniqueId(), reputation);
+                    }
+
                     meta.customName(Component.text("Villager In A Bucket"));
                     List<Component> lore = new ArrayList<>();
                     lore.add(Component.text("Level: " + villager.getVillagerLevel(), TextColor.color(Color.GRAY.asRGB()), TextDecoration.ITALIC));
@@ -77,9 +83,10 @@ public class Main extends JavaPlugin implements Listener {
                     }
                     meta.lore(lore);
                 }
-                default -> {
-                }
+                default -> throw new IllegalStateException("Unexpected value: " + entity);
             }
+            meta.getPersistentDataContainer().set(this.key, PersistentDataType.BYTE_ARRAY, Bukkit.getUnsafe().serializeEntity(entity));
+            meta.setMaxStackSize(1);
         });
     }
 
@@ -109,11 +116,11 @@ public class Main extends JavaPlugin implements Listener {
         // Handle single or multiple bucket stacks
         if (itemStack.getAmount() > 1) {
             ItemStack newStack = new ItemStack(Material.BUCKET);
-            createVillagerBucket(newStack, clicked);
+            createVillagerBucket(newStack, clicked, player);
             itemStack.setAmount(itemStack.getAmount() - 1);
             player.getInventory().addItem(newStack);
         } else {
-            createVillagerBucket(itemStack, clicked);
+            createVillagerBucket(itemStack, clicked, player);
         }
         clicked.remove();
         event.setCancelled(true);

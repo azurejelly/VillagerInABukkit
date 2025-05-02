@@ -7,3 +7,7 @@ wandering-trader: true
 
 # Disables players placing villager buckets of types that have been disabled if they obtain one somehow
 disable-bucket-use-on-disable: false
+
+# Should a players reputation with the villager decrease when captured in a bucket (Same effect as punching a villager)
+# Only affects villagers, not zombie villagers or wandering traders
+harm-reputation: false
