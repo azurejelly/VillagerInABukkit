@@ -5,6 +5,8 @@ import com.destroystokyo.paper.entity.villager.ReputationType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -35,6 +37,8 @@ public class Main extends JavaPlugin implements Listener {
     public void onEnable() {
         Config.init();
         Bukkit.getPluginManager().registerEvents(this, this);
+
+        Metrics metrics = new Metrics(this, 25722);
     }
 
     public boolean isVillagerBucket(ItemStack itemStack) {

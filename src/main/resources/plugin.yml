@@ -1,6 +1,6 @@
-name: VillagerInABukkit
+name: ${name}
 main: com.imjustdoom.villagerinabucket.Main
-version: 1.1.1
+version: ${version}
 api-version: '1.21.4'
 description: Plugin version of Villager In A Bucket
 author: JustDoom

@@ -1,11 +1,11 @@
 plugins {
     `java-library`
     `maven-publish`
+    id("com.gradleup.shadow") version "8.3.5"
     id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 group = "com.imjustdoom.villagerinabucket"
-version = "1.1.1"
 
 repositories {
     maven {
@@ -16,6 +16,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
+    implementation("org.bstats:bstats-bukkit:3.1.0")
 }
 publishing {
     publications.create<MavenPublication>("maven") {
@@ -27,18 +28,36 @@ java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 
-//tasks.processResources {
-//    filesMatching("**/plugin.yml") {
-//        expand(
-//            "name" to rootProject.name,
-//            "version" to project.version,
-//            "group" to project.group.toString()
-//        )
-//    }
-//}
-
 tasks {
+    shadowJar {
+        dependencies {
+            include(dependency("org.bstats:bstats-bukkit:3.1.0"))
+            include(dependency("org.bstats:bstats-base:3.1.0"))
+        }
+        relocate("org.bstats", project.group.toString() + ".bstats")
+        archiveFileName.set("${rootProject.name}-paper-${rootProject.version}.jar")
+    }
+
+    processResources {
+        val pluginName = rootProject.name
+        val pluginVersion = rootProject.version
+        val pluginGroup = project.group
+
+        filesMatching("**/plugin.yml") {
+            expand(
+                "name" to pluginName,
+                "version" to pluginVersion,
+                "group" to pluginGroup
+            )
+        }
+    }
+
     runServer {
         minecraftVersion("1.21.4")
+        dependsOn(shadowJar)
+    }
+
+    build {
+        dependsOn(shadowJar)
     }
 }
