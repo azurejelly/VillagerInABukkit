@@ -2,6 +2,10 @@ package com.imjustdoom.villagerinabucket;
 
 import com.destroystokyo.paper.entity.villager.Reputation;
 import com.destroystokyo.paper.entity.villager.ReputationType;
+import io.papermc.paper.datacomponent.DataComponentBuilder;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.CustomModelData;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -17,6 +21,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -51,6 +56,19 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     public void createVillagerBucket(ItemStack itemStack, Entity entity, Player player) {
+        switch (entity) {
+            case Villager villager -> {
+                itemStack.setData(DataComponentTypes.ITEM_MODEL, Key.key("villagerinabucket", "villager_in_a_bucket"));
+                itemStack.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addString(villager.getVillagerType().key().value()).build());
+            }
+            case ZombieVillager zombieVillager -> {
+                itemStack.setData(DataComponentTypes.ITEM_MODEL, Key.key("villagerinabucket", "zombie_villager_in_a_bucket"));
+            }
+            case WanderingTrader trader -> {
+                itemStack.setData(DataComponentTypes.ITEM_MODEL, Key.key("villagerinabucket", "wandering_trader_in_a_bucket"));
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + entity);
+        }
         itemStack.editMeta(meta -> {
             switch (entity) {
                 case Villager villager -> {
@@ -158,6 +176,8 @@ public class Main extends JavaPlugin implements Listener {
         }
 
         entity.spawnAt(event.getInteractionPoint());
+        itemStack.setData(DataComponentTypes.ITEM_MODEL, Key.key("minecraft", "bucket"));
+        itemStack.unsetData(DataComponentTypes.CUSTOM_MODEL_DATA);
         itemStack.editMeta(meta -> {
             meta.customName(null);
             meta.getPersistentDataContainer().remove(this.key);
