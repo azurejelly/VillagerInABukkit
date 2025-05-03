@@ -79,7 +79,7 @@ public class Main extends JavaPlugin implements Listener {
                         villager.setReputation(player.getUniqueId(), reputation);
                     }
 
-                    meta.customName(Component.text("Villager In A Bucket"));
+                    meta.itemName(Component.text("Villager In A Bucket"));
                     List<Component> lore = new ArrayList<>();
                     lore.add(Component.text("Level: " + villager.getVillagerLevel(), TextColor.color(Color.GRAY.asRGB()), TextDecoration.ITALIC));
                     lore.add(Component.text("Region: " + villager.getVillagerType().getKey().getKey().toUpperCase(), TextColor.color(Color.GRAY.asRGB()), TextDecoration.ITALIC));
@@ -90,7 +90,7 @@ public class Main extends JavaPlugin implements Listener {
                     meta.lore(lore);
                 }
                 case ZombieVillager zombieVillager -> {
-                    meta.customName(Component.text("Zombie Villager In A Bucket"));
+                    meta.itemName(Component.text("Zombie Villager In A Bucket"));
                     List<Component> lore = new ArrayList<>();
                     if (!zombieVillager.isAdult()) {
                         lore.add(Component.text("Baby", TextColor.color(Color.GRAY.asRGB()), TextDecoration.ITALIC));
@@ -98,7 +98,7 @@ public class Main extends JavaPlugin implements Listener {
                     meta.lore(lore);
                 }
                 case WanderingTrader wanderingTrader -> {
-                    meta.customName(Component.text("Wandering Trader In A Bucket"));
+                    meta.itemName(Component.text("Wandering Trader In A Bucket"));
                     List<Component> lore = new ArrayList<>();
                     if (!wanderingTrader.isAdult()) {
                         lore.add(Component.text("Baby", TextColor.color(Color.GRAY.asRGB()), TextDecoration.ITALIC));
@@ -179,7 +179,10 @@ public class Main extends JavaPlugin implements Listener {
         itemStack.setData(DataComponentTypes.ITEM_MODEL, Key.key("minecraft", "bucket"));
         itemStack.unsetData(DataComponentTypes.CUSTOM_MODEL_DATA);
         itemStack.editMeta(meta -> {
-            meta.customName(null);
+            meta.itemName(null);
+            if (meta.hasCustomName() && (meta.customName().equals("Villager In A Bucket") || meta.customName().equals("Zombie Villager In A Bucket") || meta.customName().equals("Wandering Trader In A Bucket"))) {
+                meta.customName(null);
+            }
             meta.getPersistentDataContainer().remove(this.key);
             meta.setMaxStackSize(null);
             if (meta.hasLore()) {
