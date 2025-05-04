@@ -15,7 +15,7 @@ harm-reputation: false
 # Should the server ask the client to download a resource pack when they join
 resource-pack: true
 # The URL to download the resource pack from
-resource-pack-url: ""
+resource-pack-url: "https://github.com/JustDoom/VillagerInABukkit/releases/download/Resourcepack-1.0.0/VillagerInABukkitPack.zip"
 # The SHA-1 hash of the resource pack ZIP
 resource-pack-hash: "f2d4dd5bf8ee221234b738236099b2592c58b8e8"
 # The ID for the resource pack. Please do not touch
