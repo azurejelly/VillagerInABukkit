@@ -7,6 +7,7 @@ import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.CustomModelData;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bstats.bukkit.Metrics;
@@ -18,6 +19,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -180,8 +182,11 @@ public class Main extends JavaPlugin implements Listener {
         itemStack.unsetData(DataComponentTypes.CUSTOM_MODEL_DATA);
         itemStack.editMeta(meta -> {
             meta.itemName(null);
-            if (meta.hasCustomName() && (meta.customName().equals("Villager In A Bucket") || meta.customName().equals("Zombie Villager In A Bucket") || meta.customName().equals("Wandering Trader In A Bucket"))) {
-                meta.customName(null);
+            if (meta.hasCustomName()) { // TODO: Make custom item names rename villager
+                String customName = ((TextComponent) meta.customName()).content();
+                if (customName.equals("Villager In A Bucket") || customName.equals("Zombie Villager In A Bucket") || customName.equals("Wandering Trader In A Bucket")) {
+                    meta.customName(null);
+                }
             }
             meta.getPersistentDataContainer().remove(this.key);
             meta.setMaxStackSize(null);
