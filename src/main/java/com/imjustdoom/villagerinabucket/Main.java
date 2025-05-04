@@ -63,10 +63,10 @@ public class Main extends JavaPlugin implements Listener {
                 itemStack.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addString(villager.getVillagerType().key().value()).build());
             }
             case ZombieVillager zombieVillager -> {
-                itemStack.setData(DataComponentTypes.ITEM_MODEL, Key.key("villagerinabucket", "zombie_villager_in_a_bucket"));
+                itemStack.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addString("zombie_villager").build());
             }
             case WanderingTrader trader -> {
-                itemStack.setData(DataComponentTypes.ITEM_MODEL, Key.key("villagerinabucket", "wandering_trader_in_a_bucket"));
+                itemStack.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addString("wandering_trader").build());
             }
             default -> throw new IllegalStateException("Unexpected value: " + entity);
         }
