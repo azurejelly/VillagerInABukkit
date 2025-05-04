@@ -177,7 +177,7 @@ public class Main extends JavaPlugin implements Listener {
             return;
         }
 
-        entity.spawnAt(event.getInteractionPoint());
+        entity.spawnAt(event.getInteractionPoint(), CreatureSpawnEvent.SpawnReason.BUCKET);
         itemStack.setData(DataComponentTypes.ITEM_MODEL, Key.key("minecraft", "bucket"));
         itemStack.unsetData(DataComponentTypes.CUSTOM_MODEL_DATA);
         itemStack.editMeta(meta -> {
