@@ -15,10 +15,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SingleLineChart;
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -78,12 +75,21 @@ public class Main extends JavaPlugin implements Listener {
     public void createVillagerBucket(ItemStack itemStack, Entity entity, Player player) {
         switch (entity) {
             case Villager villager -> {
+                if (!entity.isSilent()) {
+                    player.getWorld().playSound(entity.getLocation(), Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
+                }
                 itemStack.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addString(villager.getVillagerType().key().value()).build());
             }
             case ZombieVillager zombieVillager -> {
+                if (!entity.isSilent()) {
+                    player.getWorld().playSound(entity.getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_AMBIENT, 1.0f, 1.0f);
+                }
                 itemStack.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addString("zombie_villager").build());
             }
             case WanderingTrader trader -> {
+                if (!entity.isSilent()) {
+                    player.getWorld().playSound(entity.getLocation(), Sound.ENTITY_WANDERING_TRADER_NO, 1.0f, 1.0f);
+                }
                 itemStack.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addString("wandering_trader").build());
             }
             default -> throw new IllegalStateException("Unexpected value: " + entity);
@@ -187,8 +193,8 @@ public class Main extends JavaPlugin implements Listener {
         Entity entity = Bukkit.getUnsafe().deserializeEntity(dataContainer.get(this.key, PersistentDataType.BYTE_ARRAY), player.getWorld());
 
         if (((!Config.VILLAGER && entity.getType() == EntityType.VILLAGER)
-            || (!Config.ZOMBIE_VILLAGER && entity.getType() == EntityType.ZOMBIE_VILLAGER)
-            || (!Config.WANDERING_TRADER && entity.getType() == EntityType.WANDERING_TRADER))
+                || (!Config.ZOMBIE_VILLAGER && entity.getType() == EntityType.ZOMBIE_VILLAGER)
+                || (!Config.WANDERING_TRADER && entity.getType() == EntityType.WANDERING_TRADER))
                 && Config.DISABLE_PLACING_OF_DISABLED) {
             player.sendMessage(Component.text("You are not allowed to place this villager"));
             return;
@@ -210,6 +216,29 @@ public class Main extends JavaPlugin implements Listener {
                 meta.lore(null);
             }
         });
+
+        if (entity.isSilent()) {
+            return;
+        }
+
+        switch (entity) {
+            case Villager villager -> {
+                if (!entity.isSilent()) {
+                    player.getWorld().playSound(entity.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 1.0f, 1.0f);
+                }
+            }
+            case ZombieVillager zombieVillager -> {
+                if (!entity.isSilent()) {
+                    player.getWorld().playSound(entity.getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_AMBIENT, 1.0f, 1.0f);
+                }
+            }
+            case WanderingTrader trader -> {
+                if (!entity.isSilent()) {
+                    player.getWorld().playSound(entity.getLocation(), Sound.ENTITY_WANDERING_TRADER_YES, 1.0f, 1.0f);
+                }
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + entity);
+        }
     }
 
     public static Main get() {
