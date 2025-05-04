@@ -1,0 +1,75 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "cases": [
+      {
+        "when": "desert",
+        "model": {
+          "type": "minecraft:model",
+          "model": "minecraft:item/desert_villager_in_a_bucket"
+        }
+      },
+      {
+        "when": "savanna",
+        "model": {
+          "type": "minecraft:model",
+          "model": "minecraft:item/savanna_villager_in_a_bucket"
+        }
+      },
+      {
+        "when": "snow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "minecraft:item/snow_villager_in_a_bucket"
+        }
+      },
+      {
+        "when": "swamp",
+        "model": {
+          "type": "minecraft:model",
+          "model": "minecraft:item/swamp_villager_in_a_bucket"
+        }
+      },
+      {
+        "when": "jungle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "minecraft:item/villager_in_a_bucket"
+        }
+      },
+      {
+        "when": "plains",
+        "model": {
+          "type": "minecraft:model",
+          "model": "minecraft:item/villager_in_a_bucket"
+        }
+      },
+      {
+        "when": "taiga",
+        "model": {
+          "type": "minecraft:model",
+          "model": "minecraft:item/villager_in_a_bucket"
+        }
+      },
+      {
+        "when": "zombie_villager",
+        "model": {
+          "type": "minecraft:model",
+          "model": "minecraft:item/zombie_villager_in_a_bucket"
+        }
+      },
+      {
+        "when": "wandering_trader",
+        "model": {
+          "type": "minecraft:model",
+          "model": "minecraft:item/wandering_trader_in_a_bucket"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/bucket"
+    }
+  }
+}

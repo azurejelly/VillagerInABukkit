@@ -11,3 +11,12 @@ disable-bucket-use-on-disable: false
 # Should a players reputation with the villager decrease when captured in a bucket (Same effect as punching a villager)
 # Only affects villagers, not zombie villagers or wandering traders
 harm-reputation: false
+
+# Should the server ask the client to download a resource pack when they join
+resource-pack: true
+# The URL to download the resource pack from
+resource-pack-url: ""
+# The SHA-1 hash of the resource pack ZIP
+resource-pack-hash: "f2d4dd5bf8ee221234b738236099b2592c58b8e8"
+# The ID for the resource pack. Please do not touch
+resource-pack-id: "68a4b411-e409-4d89-b563-66049ba4914b"
