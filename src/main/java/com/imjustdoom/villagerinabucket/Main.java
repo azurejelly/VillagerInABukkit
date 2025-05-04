@@ -60,7 +60,6 @@ public class Main extends JavaPlugin implements Listener {
     public void createVillagerBucket(ItemStack itemStack, Entity entity, Player player) {
         switch (entity) {
             case Villager villager -> {
-                itemStack.setData(DataComponentTypes.ITEM_MODEL, Key.key("villagerinabucket", "villager_in_a_bucket"));
                 itemStack.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addString(villager.getVillagerType().key().value()).build());
             }
             case ZombieVillager zombieVillager -> {
@@ -178,7 +177,6 @@ public class Main extends JavaPlugin implements Listener {
         }
 
         entity.spawnAt(event.getInteractionPoint(), CreatureSpawnEvent.SpawnReason.BUCKET);
-        itemStack.setData(DataComponentTypes.ITEM_MODEL, Key.key("minecraft", "bucket"));
         itemStack.unsetData(DataComponentTypes.CUSTOM_MODEL_DATA);
         itemStack.editMeta(meta -> {
             meta.itemName(null);
