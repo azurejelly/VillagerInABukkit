@@ -2,19 +2,19 @@ package com.imjustdoom.villagerinabucket;
 
 import com.destroystokyo.paper.entity.villager.Reputation;
 import com.destroystokyo.paper.entity.villager.ReputationType;
-import io.papermc.paper.datacomponent.DataComponentBuilder;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.CustomModelData;
-import net.kyori.adventure.key.Key;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.resource.ResourcePackInfo;
-import net.kyori.adventure.resource.ResourcePackInfoLike;
-import net.kyori.adventure.resource.ResourcePackRequest;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bstats.bukkit.Metrics;
-import org.bstats.charts.SingleLineChart;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -24,7 +24,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -34,18 +33,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Main extends JavaPlugin implements Listener {
-    private static Main INSTANCE;
+public class VillagerInABucket extends JavaPlugin implements Listener {
+    public static String PREFIX = "[VIAB]";
+    public static TextColor TEXT_COLOR = TextColor.color(2, 220, 5);
 
     public NamespacedKey key = new NamespacedKey(this, "villager_data");
 
-    public Main() {
+    public VillagerInABucket() {
         INSTANCE = this;
     }
 
     @Override
     public void onEnable() {
         Config.init();
+
+        this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
+            LiteralCommandNode<CommandSourceStack> buildCommand = Commands.literal("villagerinabucket")
+                    .requires(sender -> sender.getSender().hasPermission("villagerinabucket.commands"))
+                    .executes(ctx -> {
+                        ctx.getSource().getSender().sendMessage(Component.text(PREFIX + " VillagerInABucket version " + getPluginMeta().getVersion(), TEXT_COLOR));
+                        return Command.SINGLE_SUCCESS;
+                    }).then(Commands.literal("reload").executes(ctx -> {
+                        Config.init();
+                        ctx.getSource().getSender().sendMessage(Component.text(PREFIX + " BetterKeepInventory has been reloaded!", TEXT_COLOR));
+                        return Command.SINGLE_SUCCESS;
+                    }))
+                    .build();
+            commands.registrar().register(buildCommand, List.of("viab"));
+        });
         Bukkit.getPluginManager().registerEvents(this, this);
 
         Metrics metrics = new Metrics(this, 25722);
@@ -241,7 +256,8 @@ public class Main extends JavaPlugin implements Listener {
         }
     }
 
-    public static Main get() {
+    private static VillagerInABucket INSTANCE;
+    public static VillagerInABucket get() {
         return INSTANCE;
     }
 }

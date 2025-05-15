@@ -15,8 +15,9 @@ public class Config {
     public static String RESOURCE_PACK_ID = "68a4b411-e409-4d89-b563-66049ba4914b";
 
     public static void init() {
-        Main.get().saveDefaultConfig();
-        FileConfiguration fileConfiguration = Main.get().getConfig();
+        VillagerInABucket.get().saveDefaultConfig();
+        VillagerInABucket.get().reloadConfig();
+        FileConfiguration fileConfiguration = VillagerInABucket.get().getConfig();
         VILLAGER = fileConfiguration.getBoolean("villager", VILLAGER);
         ZOMBIE_VILLAGER = fileConfiguration.getBoolean("zombie-villager", ZOMBIE_VILLAGER);
         WANDERING_TRADER = fileConfiguration.getBoolean("wandering-trader", WANDERING_TRADER);
