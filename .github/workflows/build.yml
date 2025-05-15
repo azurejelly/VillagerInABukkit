@@ -1,0 +1,28 @@
+name: Build
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - "src/**"
+      - "build.gradle.kts"
+      - "gradle.properties"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: "temurin"
+      - name: Build with gradle
+        run: ./gradlew clean shadowJar -PbuildWithGitHash=true
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact
+          path: |
+            build/libs/VillagerInABucket-paper-*.jar
