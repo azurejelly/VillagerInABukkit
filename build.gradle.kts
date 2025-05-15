@@ -6,6 +6,12 @@ plugins {
 }
 
 group = "com.imjustdoom.villagerinabucket"
+if (project.hasProperty("buildWithGitHash")) {
+    fun getShortCommitHash(): Provider<String> = providers.exec {
+        commandLine("git", "rev-parse", "--short", "HEAD")
+    }.standardOutput.asText.map { it.trim().ifEmpty { "unknown" } }
+    version = "${rootProject.version}-${getShortCommitHash().get()}"
+}
 
 repositories {
     maven {
@@ -35,12 +41,12 @@ tasks {
             include(dependency("org.bstats:bstats-base:3.1.0"))
         }
         relocate("org.bstats", project.group.toString() + ".bstats")
-        archiveFileName.set("${rootProject.name}-paper-${rootProject.version}.jar")
+        archiveFileName.set("${rootProject.name}-paper-${project.version}.jar")
     }
 
     processResources {
         val pluginName = rootProject.name
-        val pluginVersion = rootProject.version
+        val pluginVersion = project.version
         val pluginGroup = project.group
 
         filesMatching("**/plugin.yml") {
