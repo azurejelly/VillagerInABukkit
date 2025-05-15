@@ -25,4 +25,4 @@ jobs:
         with:
           name: artifact
           path: |
-            build/libs/VillagerInABucket-paper-*.jar
+            build/libs/VillagerInABukkit-paper-*.jar
