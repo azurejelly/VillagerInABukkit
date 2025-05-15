@@ -2,7 +2,10 @@ package com.imjustdoom.villagerinabucket;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.List;
+
 public class Config {
+    public static boolean PERMISSIONS = true;
     public static boolean VILLAGER = true;
     public static boolean ZOMBIE_VILLAGER = true;
     public static boolean WANDERING_TRADER = true;
@@ -18,6 +21,23 @@ public class Config {
         VillagerInABucket.get().saveDefaultConfig();
         VillagerInABucket.get().reloadConfig();
         FileConfiguration fileConfiguration = VillagerInABucket.get().getConfig();
+        if (!fileConfiguration.contains("use-permissions", true)) {
+            VillagerInABucket.get().getConfig().set("use-permissions", false);
+            VillagerInABucket.get().getConfig().setComments("use-permissions", List.of(
+                    "If enabled, the other options, \"villager\", \"zombie-villager\", \"wandering-trader\", \"disable-bucket-use-on-disable\" and \"harm-reputation\"",
+                    "(except the resource pack options) will be ignored in favour of using permissions instead. This is the recommended method.",
+                    "The other ones will be removed in the future"));
+            VillagerInABucket.get().saveConfig();
+            fileConfiguration = VillagerInABucket.get().getConfig();
+        } else {
+            PERMISSIONS = fileConfiguration.getBoolean("use-permissions", PERMISSIONS);
+        }
+        if (!PERMISSIONS) {
+            VillagerInABucket.get().getLogger().warning("You are currently using the old deprecated methods of configuring the server. Please switch to using permissions.");
+            VillagerInABucket.get().getLogger().warning("To do so set the 'use-permissions' config option to true. All of the permissions are given by default (Matches the old default settings) so a permission plugin such as LuckPerms should be used to configure them further.");
+            VillagerInABucket.get().getLogger().warning("The old options will be removed in a future version of the plugin. Please read this to begin the switch https://github.com/JustDoom/VillagerInABukkit/wiki/Configuring-using-permissions");
+        }
+
         VILLAGER = fileConfiguration.getBoolean("villager", VILLAGER);
         ZOMBIE_VILLAGER = fileConfiguration.getBoolean("zombie-villager", ZOMBIE_VILLAGER);
         WANDERING_TRADER = fileConfiguration.getBoolean("wandering-trader", WANDERING_TRADER);

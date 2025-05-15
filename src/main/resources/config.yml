@@ -1,15 +1,20 @@
-# Should Villager functionality be enabled?
+# If enabled, the other options, "villager", "zombie-villager", "wandering-trader", "disable-bucket-use-on-disable" and "harm-reputation"
+# (except the resource pack options) will be ignored in favour of using permissions instead. This is the recommended method.
+# The other ones will be removed in the future. If you are switching please read https://github.com/JustDoom/VillagerInABukkit/wiki/Configuring-using-permissions
+use-permissions: true
+
+# Should Villager functionality be enabled? - DEPRECATED, USE PERMISSIONS INSTEAD PLEASE
 villager: true
-# Should Zombie villager functionality be enabled?
+# Should Zombie villager functionality be enabled? - DEPRECATED, USE PERMISSIONS INSTEAD PLEASE
 zombie-villager: true
-# Should Wandering Trader functionality be enabled?
+# Should Wandering Trader functionality be enabled? - DEPRECATED, USE PERMISSIONS INSTEAD PLEASE
 wandering-trader: true
 
-# Disables players placing villager buckets of types that have been disabled if they obtain one somehow
+# Disables players placing villager buckets of types that have been disabled if they obtain one somehow - DEPRECATED, USE PERMISSIONS INSTEAD PLEASE
 disable-bucket-use-on-disable: false
 
 # Should a players reputation with the villager decrease when captured in a bucket (Same effect as punching a villager)
-# Only affects villagers, not zombie villagers or wandering traders
+# Only affects villagers, not zombie villagers or wandering traders - DEPRECATED, USE PERMISSIONS INSTEAD PLEASE
 harm-reputation: false
 
 # Should the server ask the client to download a resource pack when they join

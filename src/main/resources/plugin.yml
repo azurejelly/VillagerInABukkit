@@ -10,3 +10,27 @@ permissions:
   villagerinabucket.commands:
     default: op
     description: Allows access to the plugins commands
+
+  villagerinabucket.villager.pickup:
+    default: true
+    description: Allows picking up Villagers in buckets
+  villagerinabucket.zombie_villager.pickup:
+    default: true
+    description: Allows picking up Zombie Villagers in buckets
+  villagerinabucket.wandering_trader.pickup:
+    default: true
+    description: Allows picking up Wandering Traders in buckets
+
+  villagerinabucket.villager.place:
+    default: true
+    description: Allows placing Villagers in buckets
+  villagerinabucket.zombie_villager.place:
+    default: true
+    description: Allows placing Zombie Villagers in buckets
+  villagerinabucket.wandering_trader.place:
+    default: true
+    description: Allows placing Wandering Traders in buckets
+
+  villagerinabucket.harm-reputation:
+    default: false
+    description: Should reputation be harmed when picking up villagers

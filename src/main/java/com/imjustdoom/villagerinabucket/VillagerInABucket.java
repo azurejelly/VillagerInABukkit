@@ -112,7 +112,7 @@ public class VillagerInABucket extends JavaPlugin implements Listener {
         itemStack.editMeta(meta -> {
             switch (entity) {
                 case Villager villager -> {
-                    if (Config.HARM_REPUTATION) {
+                    if ((Config.HARM_REPUTATION && !Config.PERMISSIONS) || (Config.PERMISSIONS && player.hasPermission("villagerinabucket.harm-reputation"))) {
                         Reputation reputation = villager.getReputation(player.getUniqueId());
                         int minorRep = reputation.getReputation(ReputationType.MINOR_NEGATIVE);
                         reputation.setReputation(ReputationType.MINOR_NEGATIVE, minorRep >= 175 ? 200 : minorRep + 25);
@@ -169,9 +169,9 @@ public class VillagerInABucket extends JavaPlugin implements Listener {
         }
 
         // Check if the clicked entity is able to be picked up
-        if (((clicked.getType() != EntityType.VILLAGER || !Config.VILLAGER)
-                && (clicked.getType() != EntityType.WANDERING_TRADER || !Config.WANDERING_TRADER)
-                && (clicked.getType() != EntityType.ZOMBIE_VILLAGER || !Config.ZOMBIE_VILLAGER))) {
+        if (((clicked.getType() != EntityType.VILLAGER || (!Config.VILLAGER && !Config.PERMISSIONS) || (Config.PERMISSIONS && !player.hasPermission("villagerinabucket.villager.pickup")))
+                && (clicked.getType() != EntityType.WANDERING_TRADER || (!Config.WANDERING_TRADER && !Config.PERMISSIONS) || (Config.PERMISSIONS && !player.hasPermission("villagerinabucket.wandering_trader.pickup")))
+                && (clicked.getType() != EntityType.ZOMBIE_VILLAGER || (!Config.ZOMBIE_VILLAGER && !Config.PERMISSIONS) || (Config.PERMISSIONS && !player.hasPermission("villagerinabucket.zombie_villager.pickup"))))) {
             return;
         }
 
@@ -207,10 +207,15 @@ public class VillagerInABucket extends JavaPlugin implements Listener {
         PersistentDataContainer dataContainer = itemStack.getItemMeta().getPersistentDataContainer();
         Entity entity = Bukkit.getUnsafe().deserializeEntity(dataContainer.get(this.key, PersistentDataType.BYTE_ARRAY), player.getWorld());
 
-        if (((!Config.VILLAGER && entity.getType() == EntityType.VILLAGER)
+        if ((((!Config.VILLAGER && entity.getType() == EntityType.VILLAGER)
                 || (!Config.ZOMBIE_VILLAGER && entity.getType() == EntityType.ZOMBIE_VILLAGER)
                 || (!Config.WANDERING_TRADER && entity.getType() == EntityType.WANDERING_TRADER))
-                && Config.DISABLE_PLACING_OF_DISABLED) {
+                && Config.DISABLE_PLACING_OF_DISABLED && !Config.PERMISSIONS)
+        ||
+                ((!player.hasPermission("villagerinabucket.villager.place") && entity.getType() == EntityType.VILLAGER)
+                || (!player.hasPermission("villagerinabucket.zombie_villager.place") && entity.getType() == EntityType.ZOMBIE_VILLAGER)
+                || (!player.hasPermission("villagerinabucket.wandering_trader.place") && entity.getType() == EntityType.WANDERING_TRADER)
+                && Config.PERMISSIONS)) {
             player.sendMessage(Component.text("You are not allowed to place this villager"));
             return;
         }
