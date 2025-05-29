@@ -24,34 +24,22 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.1.0")
 }
-publishing {
-    repositories {
-        maven {
-            name = "imjustdoom"
-            url = uri("https://repo.imjustdoom.com/releases")
-            credentials {
-                username = System.getenv("MAVEN_NAME")
-                password = System.getenv("MAVEN_SECRET")
-            }
-            authentication {
-                create<BasicAuthentication>("basic")
-            }
-        }
-    }
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = project.group.toString()
-            version = project.version.toString()
-            artifact(tasks.shadowJar.get().archiveFile)
-        }
-    }
-}
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+    withJavadocJar()
 }
 
 tasks {
+    javadoc {
+        options.encoding = "UTF-8"
+        (options as StandardJavadocDocletOptions).apply {
+            links("https://jd.papermc.io/paper/1.21.5/")
+            title = "${project.name} ${project.version} API"
+            addStringOption("Xdoclint:none", "-quiet") // Suppress warnings for missing Javadoc
+        }
+    }
+
     shadowJar {
         dependencies {
             include(dependency("org.bstats:bstats-bukkit:3.1.0"))
@@ -85,5 +73,32 @@ tasks {
 
     build {
         dependsOn(shadowJar)
+        dependsOn(javadoc)
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "imjustdoom"
+            url = uri("https://repo.imjustdoom.com/releases")
+            credentials {
+                username = System.getenv("MAVEN_NAME")
+                password = System.getenv("MAVEN_SECRET")
+            }
+            authentication {
+                create<BasicAuthentication>("basic")
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = project.group.toString()
+            version = project.version.toString()
+            from(components["shadow"])
+            artifact(tasks.javadoc) {
+                classifier = "javadoc"
+            }
+        }
     }
 }
