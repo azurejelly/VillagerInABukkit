@@ -81,6 +81,11 @@ public class VillagerInABucket extends JavaPlugin implements Listener {
         }
     }
 
+    /**
+     * Checks if the passed in ItemStack is a valid Villager In A Bucket item
+     * @param itemStack the item stack to check
+     * @return if the item is a Villager In A Bucket item
+     */
     public boolean isVillagerBucket(ItemStack itemStack) {
         if (itemStack.getType() != Material.BUCKET || itemStack.getItemMeta() == null) {
             return false;
@@ -90,6 +95,12 @@ public class VillagerInABucket extends JavaPlugin implements Listener {
         return dataContainer.has(this.key) && dataContainer.get(this.key, PersistentDataType.BYTE_ARRAY) != null;
     }
 
+    /**
+     * Creates a new Villager In A Bucket item
+     * @param itemStack the ItemStack to modify
+     * @param entity the entity to store in the bucket
+     * @param player the player who is picking it up
+     */
     public void createVillagerBucket(ItemStack itemStack, Entity entity, Player player) {
         switch (entity) {
             case Villager villager -> {
@@ -265,6 +276,11 @@ public class VillagerInABucket extends JavaPlugin implements Listener {
     }
 
     private static VillagerInABucket INSTANCE;
+
+    /**
+     * Gets the Villager In A Bucket instance
+     * @return the instance
+     */
     public static VillagerInABucket get() {
         return INSTANCE;
     }
