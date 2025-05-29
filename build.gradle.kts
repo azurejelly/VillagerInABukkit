@@ -25,8 +25,22 @@ dependencies {
     implementation("org.bstats:bstats-bukkit:3.1.0")
 }
 publishing {
-    publications.create<MavenPublication>("maven") {
-        from(components["java"])
+    repositories {
+        maven {
+            name = "imjustdoom"
+            url = uri("https://repo.imjustdoom.com/releases")
+            credentials(PasswordCredentials::class)
+            authentication {
+                create<BasicAuthentication>("basic")
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = project.group.toString()
+            version = project.version.toString()
+            from(components["java"])
+        }
     }
 }
 
