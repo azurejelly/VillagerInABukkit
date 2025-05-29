@@ -29,7 +29,10 @@ publishing {
         maven {
             name = "imjustdoom"
             url = uri("https://repo.imjustdoom.com/releases")
-            credentials(PasswordCredentials::class)
+            credentials {
+                username = System.getenv("MAVEN_NAME")
+                password = System.getenv("MAVEN_SECRET")
+            }
             authentication {
                 create<BasicAuthentication>("basic")
             }
