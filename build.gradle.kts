@@ -42,7 +42,7 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = project.group.toString()
             version = project.version.toString()
-            from(components["java"])
+            artifact(tasks.shadowJar.get().archiveFile)
         }
     }
 }
