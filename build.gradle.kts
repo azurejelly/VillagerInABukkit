@@ -95,10 +95,7 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = project.group.toString()
             version = project.version.toString()
-            from(components["shadow"])
-            artifact(tasks.javadoc) {
-                classifier = "javadoc"
-            }
+            from(components["java"])
         }
     }
 }
