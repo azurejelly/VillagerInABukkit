@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.6-R0.1-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.1.0")
 }
 
@@ -34,7 +34,7 @@ tasks {
     javadoc {
         options.encoding = "UTF-8"
         (options as StandardJavadocDocletOptions).apply {
-            links("https://jd.papermc.io/paper/1.21.5/")
+            links("https://jd.papermc.io/paper/1.21.6/")
             title = "${project.name} ${project.version} API"
             addStringOption("Xdoclint:none", "-quiet") // Suppress warnings for missing Javadoc
         }
@@ -64,7 +64,7 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.21.4")
+        minecraftVersion("1.21.6")
         downloadPlugins {
             modrinth("luckperms", "v5.4.145-bukkit")
         }
