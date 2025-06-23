@@ -2,6 +2,10 @@ package com.imjustdoom.villagerinabucket;
 
 import com.destroystokyo.paper.entity.villager.Reputation;
 import com.destroystokyo.paper.entity.villager.ReputationType;
+import com.imjustdoom.villagerinabucket.event.PreVillagerPickupEvent;
+import com.imjustdoom.villagerinabucket.event.PreVillagerPlaceEvent;
+import com.imjustdoom.villagerinabucket.event.VillagerPickupEvent;
+import com.imjustdoom.villagerinabucket.event.VillagerPlaceEvent;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -192,6 +196,11 @@ public class VillagerInABucket extends JavaPlugin implements Listener {
             return;
         }
 
+        PreVillagerPickupEvent preVillagerPickupEvent = new PreVillagerPickupEvent(clicked, player, itemStack);
+        if (!preVillagerPickupEvent.callEvent()) {
+            return;
+        }
+
         // Handle single or multiple bucket stacks
         if (itemStack.getAmount() > 1 || player.getGameMode() == GameMode.CREATIVE) {
             ItemStack newStack = new ItemStack(Material.BUCKET);
@@ -200,11 +209,15 @@ public class VillagerInABucket extends JavaPlugin implements Listener {
                 itemStack.setAmount(itemStack.getAmount() - 1);
             }
             player.getInventory().addItem(newStack);
+            itemStack = newStack;
         } else {
             createVillagerBucket(itemStack, clicked, player);
         }
         clicked.remove();
         event.setCancelled(true);
+
+        VillagerPickupEvent villagerPickupEvent = new VillagerPickupEvent(clicked, player, itemStack);
+        villagerPickupEvent.callEvent();
     }
 
     @EventHandler
@@ -236,6 +249,11 @@ public class VillagerInABucket extends JavaPlugin implements Listener {
                 || (!player.hasPermission("villagerinabucket.wandering_trader.place") && entity.getType() == EntityType.WANDERING_TRADER)
                 && Config.PERMISSIONS)) {
             player.sendMessage(Component.text("You are not allowed to place this villager"));
+            return;
+        }
+
+        PreVillagerPlaceEvent preVillagerPlaceEvent = new PreVillagerPlaceEvent(entity, player, itemStack);
+        if (!preVillagerPlaceEvent.callEvent()) {
             return;
         }
 
@@ -278,6 +296,9 @@ public class VillagerInABucket extends JavaPlugin implements Listener {
             }
             default -> throw new IllegalStateException("Unexpected value: " + entity);
         }
+
+        VillagerPlaceEvent villagerPlaceEvent = new VillagerPlaceEvent(entity, player, itemStack);
+        villagerPlaceEvent.callEvent();
     }
 
     private static VillagerInABucket INSTANCE;
