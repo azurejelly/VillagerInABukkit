@@ -12,7 +12,7 @@ jobs:
           java-version: "21"
           distribution: "temurin"
       - name: Build with gradle
-        run: ./gradlew clean shadowJar publish
+        run: ./gradlew clean shadowJar publish -PbuildWithoutGitHash
         env:
           MAVEN_NAME: ${{ secrets.MAVEN_NAME }}
           MAVEN_SECRET: ${{ secrets.MAVEN_SECRET }}
