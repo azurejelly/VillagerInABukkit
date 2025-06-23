@@ -258,43 +258,43 @@ public class VillagerInABucket extends JavaPlugin implements Listener {
         }
 
         entity.spawnAt(event.getInteractionPoint(), CreatureSpawnEvent.SpawnReason.BUCKET);
-        itemStack.unsetData(DataComponentTypes.CUSTOM_MODEL_DATA);
-        itemStack.editMeta(meta -> {
-            meta.itemName(null);
-            if (meta.hasCustomName()) { // TODO: Make custom item names rename villager
-                String customName = ((TextComponent) meta.customName()).content();
-                if (customName.equals("Villager In A Bucket") || customName.equals("Zombie Villager In A Bucket") || customName.equals("Wandering Trader In A Bucket")) {
-                    meta.customName(null);
+        if (player.getGameMode() != GameMode.CREATIVE) {
+            itemStack.unsetData(DataComponentTypes.CUSTOM_MODEL_DATA);
+            itemStack.editMeta(meta -> {
+                meta.itemName(null);
+                if (meta.hasCustomName()) { // TODO: Make custom item names rename villager
+                    String customName = ((TextComponent) meta.customName()).content();
+                    if (customName.equals("Villager In A Bucket") || customName.equals("Zombie Villager In A Bucket") || customName.equals("Wandering Trader In A Bucket")) {
+                        meta.customName(null);
+                    }
                 }
-            }
-            meta.getPersistentDataContainer().remove(this.key);
-            meta.setMaxStackSize(null);
-            if (meta.hasLore()) {
-                meta.lore(null);
-            }
-        });
-
-        if (entity.isSilent()) {
-            return;
+                meta.getPersistentDataContainer().remove(this.key);
+                meta.setMaxStackSize(null);
+                if (meta.hasLore()) {
+                    meta.lore(null);
+                }
+            });
         }
 
-        switch (entity) {
-            case Villager villager -> {
-                if (!entity.isSilent()) {
-                    player.getWorld().playSound(entity.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 1.0f, 1.0f);
+        if (!entity.isSilent()) {
+            switch (entity) {
+                case Villager villager -> {
+                    if (!entity.isSilent()) {
+                        player.getWorld().playSound(entity.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 1.0f, 1.0f);
+                    }
                 }
-            }
-            case ZombieVillager zombieVillager -> {
-                if (!entity.isSilent()) {
-                    player.getWorld().playSound(entity.getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_AMBIENT, 1.0f, 1.0f);
+                case ZombieVillager zombieVillager -> {
+                    if (!entity.isSilent()) {
+                        player.getWorld().playSound(entity.getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_AMBIENT, 1.0f, 1.0f);
+                    }
                 }
-            }
-            case WanderingTrader trader -> {
-                if (!entity.isSilent()) {
-                    player.getWorld().playSound(entity.getLocation(), Sound.ENTITY_WANDERING_TRADER_YES, 1.0f, 1.0f);
+                case WanderingTrader trader -> {
+                    if (!entity.isSilent()) {
+                        player.getWorld().playSound(entity.getLocation(), Sound.ENTITY_WANDERING_TRADER_YES, 1.0f, 1.0f);
+                    }
                 }
+                default -> throw new IllegalStateException("Unexpected value: " + entity);
             }
-            default -> throw new IllegalStateException("Unexpected value: " + entity);
         }
 
         VillagerPlaceEvent villagerPlaceEvent = new VillagerPlaceEvent(entity, player, itemStack);
