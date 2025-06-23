@@ -28,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -102,6 +103,8 @@ public class VillagerInABucket extends JavaPlugin implements Listener {
      * @param player the player who is picking it up
      */
     public void createVillagerBucket(ItemStack itemStack, Entity entity, Player player) {
+        entity.setVelocity(new Vector(0, 0, 0));
+        entity.setFallDistance(0);
         switch (entity) {
             case Villager villager -> {
                 if (!entity.isSilent()) {
