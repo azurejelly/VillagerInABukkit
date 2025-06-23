@@ -193,10 +193,12 @@ public class VillagerInABucket extends JavaPlugin implements Listener {
         }
 
         // Handle single or multiple bucket stacks
-        if (itemStack.getAmount() > 1) {
+        if (itemStack.getAmount() > 1 || player.getGameMode() == GameMode.CREATIVE) {
             ItemStack newStack = new ItemStack(Material.BUCKET);
             createVillagerBucket(newStack, clicked, player);
-            itemStack.setAmount(itemStack.getAmount() - 1);
+            if (player.getGameMode() != GameMode.CREATIVE) {
+                itemStack.setAmount(itemStack.getAmount() - 1);
+            }
             player.getInventory().addItem(newStack);
         } else {
             createVillagerBucket(itemStack, clicked, player);
